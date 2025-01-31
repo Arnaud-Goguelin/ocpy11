@@ -53,10 +53,15 @@ def showSummary():
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
-    if foundClub and foundCompetition:
+    # --- correct booking more than 12 places ---
+    placesRequired = int(request.form["places"])
+    if placesRequired > 12:
+        flash("Not allow to book more than 12 places.")
+    elif foundClub and foundCompetition:
         return render_template(
             "booking.html", club=foundClub, competition=foundCompetition
         )
+
     else:
         flash("Something went wrong-please try again")
         return render_template("welcome.html", club=club, competitions=competitions)
@@ -72,10 +77,6 @@ def purchasePlaces():
     # --- correct overbooking ---
     if placesRequired > int(competition["numberOfPlaces"]):
         flash("Not enough places available!")
-    # TODO this check should go in "/book/<competition>/<club>" route
-    # --- correct booking more than 12 places ---
-    elif placesRequired > 12:
-        flash("Not allow to book more than 12 places.")
     else:
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
