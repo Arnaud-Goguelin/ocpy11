@@ -72,6 +72,9 @@ def purchasePlaces():
     # --- correct overbooking ---
     if placesRequired > int(competition["numberOfPlaces"]):
         flash("Not enough places available!")
+    # --- correct booking more than 12 places ---
+    elif placesRequired > 12:
+        flash("Not allow to book more than 12 places.")
     else:
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
