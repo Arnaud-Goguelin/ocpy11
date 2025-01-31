@@ -22,4 +22,4 @@ jobs:
 
     - name: Run Pytest
       run: |
-        coverage run manage.py test
+        pytest tests
