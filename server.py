@@ -72,6 +72,7 @@ def purchasePlaces():
     # --- correct overbooking ---
     if placesRequired > int(competition["numberOfPlaces"]):
         flash("Not enough places available!")
+    # TODO this check should go in "/book/<competition>/<club>" route
     # --- correct booking more than 12 places ---
     elif placesRequired > 12:
         flash("Not allow to book more than 12 places.")
@@ -79,6 +80,8 @@ def purchasePlaces():
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
         )
+        # --- correct points deduction ---
+        club["points"] = int(club["points"]) - placesRequired
         flash("Great-booking complete!")
 
     return render_template("welcome.html", club=club, competitions=competitions)
