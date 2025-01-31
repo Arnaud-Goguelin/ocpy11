@@ -1,4 +1,5 @@
 name: Code linting
+run-name: ${{ github.actor }} ensures tests pass
 
 on: [push]
 
