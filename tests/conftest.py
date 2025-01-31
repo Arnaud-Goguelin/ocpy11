@@ -1,0 +1,30 @@
+import pytest
+from server import app
+
+# from unittest.mock import patch
+
+
+# create a test client to simulate HTTP requests without running the server
+@pytest.fixture
+def client():
+    app.config["TESTING"] = True
+    # with keyword allow us to use the simulated app in the test
+    # and automatically close it when the test is done and reset state
+    with app.test_client() as client:
+        yield client
+
+
+# Tip:  ORM better to use FactoryBoy: https://factoryboy.readthedocs.io/en/stable/orms.html
+#  in order to create automatically test data (and classes from models in DB)
+
+# Example to mock functions in server.py
+# yet we can simply use a decorator un the test function for the same purpose
+# like this: @patch("server.loadCompetitions")
+
+# @pytest.fixture
+# def mock_load_competitions(mocker):
+#     return mocker.patch("server.loadCompetitions")
+
+# @pytest.fixture
+# def mock_load_clubs(mocker):
+#     return mocker.patch("server.loadClubs")

@@ -1,6 +1,10 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 
+# --------------------------------------------------
+#  functions to load data in json files
+# --------------------------------------------------
+
 
 def loadClubs():
     with open("clubs.json") as c:
@@ -14,11 +18,24 @@ def loadCompetitions():
         return listOfCompetitions
 
 
+# --------------------------------------------------
+#  create Flask app
+# --------------------------------------------------
+
 app = Flask(__name__)
 app.secret_key = "something_special"
 
+# --------------------------------------------------
+#  set data in variables
+# --------------------------------------------------
+
+
 competitions = loadCompetitions()
 clubs = loadClubs()
+
+# --------------------------------------------------
+#  routes
+# --------------------------------------------------
 
 
 @app.route("/")
@@ -52,8 +69,15 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
-    competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
-    flash("Great-booking complete!")
+    # --- correct overbooking ---
+    if placesRequired > int(competition["numberOfPlaces"]):
+        flash("Not enough places available!")
+    else:
+        competition["numberOfPlaces"] = (
+            int(competition["numberOfPlaces"]) - placesRequired
+        )
+        flash("Great-booking complete!")
+
     return render_template("welcome.html", club=club, competitions=competitions)
 
 
@@ -63,3 +87,12 @@ def purchasePlaces():
 @app.route("/logout")
 def logout():
     return redirect(url_for("index"))
+
+
+# --------------------------------------------------
+#  run app
+# --------------------------------------------------
+
+if __name__ == "__main__":
+    # TODO: set env variable for debug mode
+    app.run(debug=True)
