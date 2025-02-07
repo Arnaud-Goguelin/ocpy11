@@ -22,5 +22,5 @@ class TestShowSummaryEndpoint:
         assert "Redirecting..." in response.data.decode()
 
         # Follow the redirect
-        response = client.get(response.headers["Location"])
-        assert "Email not registered." in response.data.decode()
+        redirected_response = client.get(response.headers["Location"])
+        assert "Email not registered." in redirected_response.data.decode()
