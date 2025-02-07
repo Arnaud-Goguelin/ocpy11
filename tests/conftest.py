@@ -14,6 +14,34 @@ def client():
         yield client
 
 
+def create_competition_test(
+    name: str = "Competition Test",
+    date: str = "2021-07-03 10:00:00",
+    numberOfPlaces: str = "10",
+) -> dict:
+    return [
+        {
+            "name": name,
+            "date": date,
+            "numberOfPlaces": numberOfPlaces,
+        }
+    ]
+
+
+def create_club_test(
+    name: str = "Club Test",
+    points: str = "4",
+    email: str = "test@email.com",
+) -> dict:
+    return [
+        {
+            "name": name,
+            "email": email,
+            "points": points,
+        }
+    ]
+
+
 # Tip:  ORM better to use FactoryBoy: https://factoryboy.readthedocs.io/en/stable/orms.html
 #  in order to create automatically test data (and classes from models in DB)
 

@@ -1,5 +1,6 @@
 import server
 from unittest.mock import patch, MagicMock
+from tests.conftest import create_competition_test, create_club_test
 
 
 # client is def in conftest.py and inject automatically
@@ -10,8 +11,10 @@ from unittest.mock import patch, MagicMock
 class TestPurchasePlacesEndpoint:
 
     # mock functions to get data from json files
-    @patch("server.loadCompetitions")
-    @patch("server.loadClubs")
+    # ! becareful of the order of patching
+    # ! the closest to the test is the first to be patched
+    @patch("server.loadClubs", return_value=create_club_test())
+    @patch("server.loadCompetitions", return_value=create_competition_test())
     def test_purchase_possible(
         self,
         load_competitions_mock: MagicMock,
@@ -21,30 +24,21 @@ class TestPurchasePlacesEndpoint:
         """
         Test if a purchase is possible.
         """
-        # mock results of functions in patch decorator
+
         # set up
-        load_competitions_mock.return_value = [
-            {
-                "name": "Test Competition",
-                "numberOfPlaces": 10,
-            }
-        ]
-        load_clubs_mock.return_value = [
-            {
-                "name": "Test Club",
-                "points": 5,
-            }
-        ]
-        # set mocked results to var used in endpoints
-        server.competitions = load_competitions_mock()
-        server.clubs = load_clubs_mock()
+        # reforce loading data, mocked data will be used this way
+        server.competitions = server.loadCompetitions()
+        server.clubs = server.loadClubs()
+
+        competition_test = server.competitions[0]
+        club_test = server.clubs[0]
 
         # test
         response = client.post(
             "/purchasePlaces",
             data={
-                "competition": "Test Competition",
-                "club": "Test Club",
+                "competition": competition_test["name"],
+                "club": club_test["name"],
                 "places": 2,
             },
         )
@@ -54,8 +48,16 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadCompetitions")
-    @patch("server.loadClubs")
+    @patch(
+        "server.loadClubs",
+        return_value=create_club_test(),
+    )
+    @patch(
+        "server.loadCompetitions",
+        return_value=create_competition_test(
+            numberOfPlaces="2",
+        ),
+    )
     def test_overbooking(
         self,
         load_competitions_mock: MagicMock,
@@ -67,27 +69,19 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        load_competitions_mock.return_value = [
-            {
-                "name": "Test Competition",
-                "numberOfPlaces": 2,
-            }
-        ]
-        load_clubs_mock.return_value = [
-            {
-                "name": "Test Club",
-                "points": 8,
-            }
-        ]
-        server.competitions = load_competitions_mock()
-        server.clubs = load_clubs_mock()
+        # reforce loading data, mocked data will be used this way
+        server.competitions = server.loadCompetitions()
+        server.clubs = server.loadClubs()
+
+        competition_test = server.competitions[0]
+        club_test = server.clubs[0]
 
         # test
         response = client.post(
             "/purchasePlaces",
             data={
-                "competition": "Test Competition",
-                "club": "Test Club",
+                "competition": competition_test["name"],
+                "club": club_test["name"],
                 "places": 8,
             },
         )
@@ -97,8 +91,14 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadCompetitions")
-    @patch("server.loadClubs")
+    @patch(
+        "server.loadClubs",
+        return_value=create_club_test(points="15"),
+    )
+    @patch(
+        "server.loadCompetitions",
+        return_value=create_competition_test(numberOfPlaces="20"),
+    )
     def test_book_more_than_12_places(
         self,
         load_competitions_mock: MagicMock,
@@ -110,27 +110,19 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        load_competitions_mock.return_value = [
-            {
-                "name": "Test Competition",
-                "numberOfPlaces": 20,
-            }
-        ]
-        load_clubs_mock.return_value = [
-            {
-                "name": "Test Club",
-                "points": 8,
-            }
-        ]
-        server.competitions = load_competitions_mock()
-        server.clubs = load_clubs_mock()
+        # reforce loading data, mocked data will be used this way
+        server.competitions = server.loadCompetitions()
+        server.clubs = server.loadClubs()
+
+        competition_test = server.competitions[0]
+        club_test = server.clubs[0]
 
         # test
         response = client.post(
             "/purchasePlaces",
             data={
-                "competition": "Test Competition",
-                "club": "Test Club",
+                "competition": competition_test["name"],
+                "club": club_test["name"],
                 "places": 13,
             },
         )
@@ -140,8 +132,8 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadCompetitions")
-    @patch("server.loadClubs")
+    @patch("server.loadClubs", return_value=create_club_test(points="10"))
+    @patch("server.loadCompetitions", return_value=create_competition_test())
     def test_club_point_deducted(
         self,
         load_competitions_mock: MagicMock,
@@ -149,44 +141,34 @@ class TestPurchasePlacesEndpoint:
         client,
     ):
         """
-        Test if booking more than 12 places is detected.
+        Test if clubs's points are deducted after booking.
         """
 
         # set up
-        load_competitions_mock.return_value = [
-            {
-                "name": "Test Competition",
-                "numberOfPlaces": 10,
-            }
-        ]
-        load_clubs_mock.return_value = [
-            {
-                "name": "Test Club",
-                "points": 8,
-            }
-        ]
-        server.competitions = load_competitions_mock()
-        server.clubs = load_clubs_mock()
+        # reforce loading data, mocked data will be used this way
+        server.competitions = server.loadCompetitions()
+        server.clubs = server.loadClubs()
 
-        test_competition = server.competitions[0]
+        competition_test = server.competitions[0]
+        club_test = server.clubs[0]
 
         # test
         response = client.post(
             "/purchasePlaces",
             data={
-                "competition": "Test Competition",
-                "club": "Test Club",
+                "competition": competition_test["name"],
+                "club": club_test["name"],
                 "places": 5,
             },
         )
 
         assert response.status_code == 200
-        assert test_competition["numberOfPlaces"] == 5
+        assert club_test["points"] == 5
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadCompetitions")
-    @patch("server.loadClubs")
+    @patch("server.loadClubs", return_value=create_club_test(points="5"))
+    @patch("server.loadCompetitions", return_value=create_competition_test())
     def test_boork_more_than_club_point(
         self,
         load_competitions_mock: MagicMock,
@@ -197,27 +179,19 @@ class TestPurchasePlacesEndpoint:
         Test if booking more than club points is not allowed.
         """
         # set up
-        load_competitions_mock.return_value = [
-            {
-                "name": "Test Competition",
-                "numberOfPlaces": 10,
-            }
-        ]
-        load_clubs_mock.return_value = [
-            {
-                "name": "Test Club",
-                "points": 5,
-            }
-        ]
-        server.competitions = load_competitions_mock()
-        server.clubs = load_clubs_mock()
+        # reforce loading data, mocked data will be used this way
+        server.competitions = server.loadCompetitions()
+        server.clubs = server.loadClubs()
+
+        competition_test = server.competitions[0]
+        club_test = server.clubs[0]
 
         # test
         response = client.post(
             "/purchasePlaces",
             data={
-                "competition": "Test Competition",
-                "club": "Test Club",
+                "competition": competition_test["name"],
+                "club": club_test["name"],
                 "places": 6,
             },
         )
