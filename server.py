@@ -33,7 +33,6 @@ app.secret_key = "something_special"
 
 competitions = loadCompetitions()
 clubs = loadClubs()
-allowed_emails = [club["email"] for club in clubs]
 
 # --------------------------------------------------
 #  routes
@@ -47,19 +46,26 @@ def index():
 
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
-    # --- correct email not registered ---
-    if request.form["email"] not in allowed_emails:
+    club = next(
+        (club for club in clubs if club["email"] == request.form["email"]),
+        None,
+    )
+    if not club:
         flash("Email not registered.")
         return redirect(url_for("index"))
-    else:
-        club = [club for club in clubs if club["email"] == request.form["email"]][0]
-        return render_template("welcome.html", club=club, competitions=competitions)
+
+    return render_template("welcome.html", club=club, competitions=competitions)
 
 
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
-    foundClub = [c for c in clubs if c["name"] == club][0]
-    foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    try:
+        foundClub = [c for c in clubs if c["name"] == club][0]
+        foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    except IndexError:
+        flash("Something went wrong-please try again")
+        return render_template("welcome.html", club=club, competitions=competitions)
+
     competition_date = datetime.datetime.strptime(
         foundCompetition["date"], "%Y-%m-%d %H:%M:%S"
     )
