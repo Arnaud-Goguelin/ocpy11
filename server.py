@@ -33,6 +33,7 @@ app.secret_key = "something_special"
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+allowed_emails = [club["email"] for club in clubs]
 
 # --------------------------------------------------
 #  routes
@@ -46,8 +47,13 @@ def index():
 
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
-    club = [club for club in clubs if club["email"] == request.form["email"]][0]
-    return render_template("welcome.html", club=club, competitions=competitions)
+    # --- correct email not registered ---
+    if request.form["email"] not in allowed_emails:
+        flash("Email not registered.")
+        return redirect(url_for("index"))
+    else:
+        club = [club for club in clubs if club["email"] == request.form["email"]][0]
+        return render_template("welcome.html", club=club, competitions=competitions)
 
 
 @app.route("/book/<competition>/<club>")
