@@ -97,7 +97,6 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    # TODO this test should go to an other file dedicated to "/book/<competition>/<club>" route
     @patch("server.loadCompetitions")
     @patch("server.loadClubs")
     def test_book_more_than_12_places(
