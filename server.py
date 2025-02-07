@@ -1,3 +1,4 @@
+import datetime
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 
@@ -53,10 +54,21 @@ def showSummary():
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    competition_date = datetime.datetime.strptime(
+        foundCompetition["date"], "%Y-%m-%d %H:%M:%S"
+    )
+
     if foundClub and foundCompetition:
-        return render_template(
-            "booking.html", club=foundClub, competition=foundCompetition
-        )
+        # --- correct booking in past competition ---
+        if competition_date < datetime.datetime.now():
+            flash("Too late, competition already started!")
+            return render_template(
+                "welcome.html", club=foundClub, competitions=competitions
+            )
+        else:
+            return render_template(
+                "booking.html", club=foundClub, competition=foundCompetition
+            )
     else:
         flash("Something went wrong-please try again")
         return render_template("welcome.html", club=club, competitions=competitions)
@@ -72,7 +84,6 @@ def purchasePlaces():
     # --- correct overbooking ---
     if placesRequired > int(competition["numberOfPlaces"]):
         flash("Not enough places available!")
-    # TODO this check should go in "/book/<competition>/<club>" route
     # --- correct booking more than 12 places ---
     elif placesRequired > 12:
         flash("Not allow to book more than 12 places.")
