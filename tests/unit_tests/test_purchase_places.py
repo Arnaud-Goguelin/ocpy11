@@ -48,15 +48,10 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch(
-        "server.loadClubs",
-        return_value=create_one_club_test(),
-    )
+    @patch("server.loadClubs", return_value=create_one_club_test())
     @patch(
         "server.loadCompetitions",
-        return_value=create_one_competition_test(
-            numberOfPlaces="2",
-        ),
+        return_value=create_one_competition_test(numberOfPlaces="2"),
     )
     def test_overbooking(
         self,
@@ -91,10 +86,7 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch(
-        "server.loadClubs",
-        return_value=create_one_club_test(points="15"),
-    )
+    @patch("server.loadClubs", return_value=create_one_club_test(points="15"))
     @patch(
         "server.loadCompetitions",
         return_value=create_one_competition_test(numberOfPlaces="20"),
