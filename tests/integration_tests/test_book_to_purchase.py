@@ -30,6 +30,7 @@ def test_summary_to_welcome(
     response = client.get(f"/book/{competition_test["name"]}/{club_test["name"]}")
     assert response.status_code == 200
     assert "Booking for Competition Test" in response.data.decode()
+
     # test if the purchase is confirmed and point deducted
     response = client.post(
         "/purchasePlaces",
