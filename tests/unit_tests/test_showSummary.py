@@ -12,14 +12,14 @@ class TestShowSummaryEndpoint:
 
     @patch("server.loadClubs", return_value=create_club_test())
     @patch("server.loadCompetitions", return_value=create_competition_test())
-    def test_unknow_email(
+    def test_unknown_email(
         self,
         load_competitions_mock: MagicMock,
         load_clubs_mock: MagicMock,
         client,
     ):
         """
-        Test if unknow remail is detected.
+        Test if unknown email is detected.
         """
         # set up
         # here, mocking data ensure we have the same data

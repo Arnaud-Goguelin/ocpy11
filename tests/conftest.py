@@ -18,7 +18,7 @@ def create_competition_test(
     name: str = "Competition Test",
     date: str = "2021-07-03 10:00:00",
     numberOfPlaces: str = "10",
-) -> dict:
+) -> list[dict]:
     return [
         {
             "name": name,
@@ -32,7 +32,7 @@ def create_club_test(
     name: str = "Club Test",
     points: str = "4",
     email: str = "test@email.com",
-) -> dict:
+) -> list[dict]:
     return [
         {
             "name": name,

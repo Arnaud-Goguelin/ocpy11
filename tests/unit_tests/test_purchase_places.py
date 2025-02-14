@@ -26,7 +26,7 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        # reforce loading data, mocked data will be used this way
+        # force loading data, mocked data will be used this way
         server.competitions = server.loadCompetitions()
         server.clubs = server.loadClubs()
 
@@ -69,7 +69,7 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        # reforce loading data, mocked data will be used this way
+        # force loading data, mocked data will be used this way
         server.competitions = server.loadCompetitions()
         server.clubs = server.loadClubs()
 
@@ -110,7 +110,7 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        # reforce loading data, mocked data will be used this way
+        # force loading data, mocked data will be used this way
         server.competitions = server.loadCompetitions()
         server.clubs = server.loadClubs()
 
@@ -145,7 +145,7 @@ class TestPurchasePlacesEndpoint:
         """
 
         # set up
-        # reforce loading data, mocked data will be used this way
+        # force loading data, mocked data will be used this way
         server.competitions = server.loadCompetitions()
         server.clubs = server.loadClubs()
 
@@ -169,7 +169,7 @@ class TestPurchasePlacesEndpoint:
 
     @patch("server.loadClubs", return_value=create_club_test(points="5"))
     @patch("server.loadCompetitions", return_value=create_competition_test())
-    def test_boork_more_than_club_point(
+    def test_book_more_than_club_point(
         self,
         load_competitions_mock: MagicMock,
         load_clubs_mock: MagicMock,
@@ -179,7 +179,7 @@ class TestPurchasePlacesEndpoint:
         Test if booking more than club points is not allowed.
         """
         # set up
-        # reforce loading data, mocked data will be used this way
+        # force loading data, mocked data will be used this way
         server.competitions = server.loadCompetitions()
         server.clubs = server.loadClubs()
 

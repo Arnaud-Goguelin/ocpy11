@@ -31,12 +31,12 @@ class TestBookEndpoint:
 
     @patch("server.competitions", create_competition_test(date="2030-07-03 10:30:00"))
     @patch("server.clubs", create_club_test())
-    def test_book_in_futur(
+    def test_book_in_future(
         self,
         client,
     ):
         """
-        Test if book in futur competition is allowed.
+        Test if book in future competition is allowed.
         """
         # set up already done in patch decorator
 
