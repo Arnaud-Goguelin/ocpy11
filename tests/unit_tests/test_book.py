@@ -1,4 +1,4 @@
-from tests.conftest import create_club_test, create_competition_test
+from tests.conftest import create_one_club_test, create_one_competition_test
 from unittest.mock import patch
 
 
@@ -10,8 +10,8 @@ from unittest.mock import patch
 class TestBookEndpoint:
 
     # mock data from json files
-    @patch("server.competitions", create_competition_test())
-    @patch("server.clubs", create_club_test())
+    @patch("server.competitions", create_one_competition_test())
+    @patch("server.clubs", create_one_club_test())
     def test_book_in_past(
         self,
         client,
@@ -29,8 +29,8 @@ class TestBookEndpoint:
         # load_competitions_mock.assert_called_once()
         # load_clubs_mock.assert_called_once()
 
-    @patch("server.competitions", create_competition_test(date="2030-07-03 10:30:00"))
-    @patch("server.clubs", create_club_test())
+    @patch("server.competitions", create_one_competition_test(date="2030-07-03 10:30:00"))
+    @patch("server.clubs", create_one_club_test())
     def test_book_in_future(
         self,
         client,

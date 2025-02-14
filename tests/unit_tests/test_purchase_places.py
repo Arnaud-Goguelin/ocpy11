@@ -1,6 +1,6 @@
 import server
 from unittest.mock import patch, MagicMock
-from tests.conftest import create_competition_test, create_club_test
+from tests.conftest import create_one_competition_test, create_one_club_test
 
 
 # client is def in conftest.py and inject automatically
@@ -13,8 +13,8 @@ class TestPurchasePlacesEndpoint:
     # mock functions to get data from json files
     # ! becareful of the order of patching
     # ! the closest to the test is the first to be patched
-    @patch("server.loadClubs", return_value=create_club_test())
-    @patch("server.loadCompetitions", return_value=create_competition_test())
+    @patch("server.loadClubs", return_value=create_one_club_test())
+    @patch("server.loadCompetitions", return_value=create_one_competition_test())
     def test_purchase_possible(
         self,
         load_competitions_mock: MagicMock,
@@ -50,11 +50,11 @@ class TestPurchasePlacesEndpoint:
 
     @patch(
         "server.loadClubs",
-        return_value=create_club_test(),
+        return_value=create_one_club_test(),
     )
     @patch(
         "server.loadCompetitions",
-        return_value=create_competition_test(
+        return_value=create_one_competition_test(
             numberOfPlaces="2",
         ),
     )
@@ -93,11 +93,11 @@ class TestPurchasePlacesEndpoint:
 
     @patch(
         "server.loadClubs",
-        return_value=create_club_test(points="15"),
+        return_value=create_one_club_test(points="15"),
     )
     @patch(
         "server.loadCompetitions",
-        return_value=create_competition_test(numberOfPlaces="20"),
+        return_value=create_one_competition_test(numberOfPlaces="20"),
     )
     def test_book_more_than_12_places(
         self,
@@ -132,8 +132,8 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadClubs", return_value=create_club_test(points="10"))
-    @patch("server.loadCompetitions", return_value=create_competition_test())
+    @patch("server.loadClubs", return_value=create_one_club_test(points="10"))
+    @patch("server.loadCompetitions", return_value=create_one_competition_test())
     def test_club_point_deducted(
         self,
         load_competitions_mock: MagicMock,
@@ -167,8 +167,8 @@ class TestPurchasePlacesEndpoint:
         load_competitions_mock.assert_called_once()
         load_clubs_mock.assert_called_once()
 
-    @patch("server.loadClubs", return_value=create_club_test(points="5"))
-    @patch("server.loadCompetitions", return_value=create_competition_test())
+    @patch("server.loadClubs", return_value=create_one_club_test(points="5"))
+    @patch("server.loadCompetitions", return_value=create_one_competition_test())
     def test_book_more_than_club_point(
         self,
         load_competitions_mock: MagicMock,

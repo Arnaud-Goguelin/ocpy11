@@ -14,7 +14,7 @@ def client():
         yield client
 
 
-def create_competition_test(
+def create_one_competition_test(
     name: str = "Competition Test",
     date: str = "2021-07-03 10:00:00",
     numberOfPlaces: str = "10",
@@ -28,7 +28,7 @@ def create_competition_test(
     ]
 
 
-def create_club_test(
+def create_one_club_test(
     name: str = "Club Test",
     points: str = "4",
     email: str = "test@email.com",
