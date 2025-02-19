@@ -25,6 +25,30 @@
         <button type="submit">Enter</button>
     </form>
     {%endwith%}
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Club's Name
+                </th>
+                <th>
+                    Points Available
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for club in clubs %}
+        <tr>
+            <td>
+                {{club.name}}
+            </td>
+            <td>
+                {{club.points}}
+            </td>
+        {%endfor%}
+        </tbody>
+    </table>
 
 </body>
 
