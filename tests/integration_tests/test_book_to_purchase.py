@@ -4,7 +4,10 @@ from tests.conftest import create_one_competition_test, create_one_club_test
 
 
 @patch("server.loadClubs", return_value=create_one_club_test(points="10"))
-@patch("server.loadCompetitions", return_value=create_one_competition_test(date="2030-07-03 10:30:00"))
+@patch(
+    "server.loadCompetitions",
+    return_value=create_one_competition_test(date="2030-07-03 10:30:00"),
+)
 def test_summary_to_welcome(
     load_clubs_mock: MagicMock,
     load_competitions_mock: MagicMock,
