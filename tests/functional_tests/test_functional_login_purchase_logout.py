@@ -4,8 +4,6 @@ from selenium import webdriver
 
 from server import clubs, competitions
 
-# TODO: try to adapt functional test to updated data and not only data when app is started
-
 
 @pytest.mark.functional
 class TestFunctional:
