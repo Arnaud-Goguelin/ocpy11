@@ -113,9 +113,6 @@ def purchasePlaces():
     return render_template("welcome.html", club=club, competitions=competitions)
 
 
-# TODO: Add route for points display
-
-
 @app.route("/logout")
 def logout():
     return redirect(url_for("index"))
@@ -126,5 +123,4 @@ def logout():
 # --------------------------------------------------
 
 if __name__ == "__main__":
-    # TODO: set env variable for debug mode
     app.run(debug=True)
