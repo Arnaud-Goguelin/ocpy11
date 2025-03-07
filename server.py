@@ -60,6 +60,8 @@ def showSummary():
 
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
+    # TODO: refactor => create a function to return foundClub and foundCompetition
+    # and create a better error handling to return more precise messages
     try:
         foundClub = [c for c in clubs if c["name"] == club][0]
         foundCompetition = [c for c in competitions if c["name"] == competition][0]
@@ -71,20 +73,18 @@ def book(competition, club):
         foundCompetition["date"], "%Y-%m-%d %H:%M:%S"
     )
 
-    if foundClub and foundCompetition:
-        # --- correct booking in past competition ---
-        if competition_date < datetime.datetime.now():
-            flash("Too late, competition already started!")
-            return render_template(
-                "welcome.html", club=foundClub, competitions=competitions
-            )
-        else:
-            return render_template(
-                "booking.html", club=foundClub, competition=foundCompetition
-            )
+    # --- correct booking in past competition ---
+    if competition_date < datetime.datetime.now():
+        flash("Too late, competition already started!")
+        return render_template(
+            "welcome.html", club=foundClub, competitions=competitions
+        )
     else:
-        flash("Something went wrong-please try again")
-        return render_template("welcome.html", club=club, competitions=competitions)
+        foundClub['points'] = int(foundClub['points'])
+        return render_template(
+            "booking.html", club=foundClub, competition=foundCompetition
+        )
+
 
 
 @app.route("/purchasePlaces", methods=["POST"])
@@ -97,6 +97,9 @@ def purchasePlaces():
     # --- correct overbooking ---
     if placesRequired > int(competition["numberOfPlaces"]):
         flash("Not enough places available!")
+    # --- correct booking negative number ---
+    elif placesRequired < 0:
+        flash("Need a positive integer!")
     # --- correct booking more than 12 places ---
     elif placesRequired > 12:
         flash("Not allow to book more than 12 places.")
