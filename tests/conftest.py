@@ -56,3 +56,5 @@ def create_one_club_test(
 # @pytest.fixture
 # def mock_load_clubs(mocker):
 #     return mocker.patch("server.loadClubs")
+
+#TIP: a ficture can have a scop (function, global...)

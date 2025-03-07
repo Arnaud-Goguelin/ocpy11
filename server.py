@@ -50,6 +50,7 @@ def showSummary():
         (club for club in clubs if club["email"] == request.form["email"]),
         None,
     )
+    # --- correct crash when unknown email is detected ---
     if not club:
         flash("Email not registered.")
         return redirect(url_for("index"))
